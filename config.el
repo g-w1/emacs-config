@@ -79,11 +79,57 @@
   "Send a message to ZNC incorporated by user '*status'."
   (circe-command-MSG "*status" (concat "JumpNetwork " what)))
 (after! circe
-  (set-irc-server! "bruh"
+  (set-irc-server! "bruh1"
    '(:tls nil
+     :host "bruh"
      :port 6697
      :nick "jacob/freenode"
+     :pass "bruhmoment")) ;; dont even try to hack me :)
+  (set-irc-server! "bruh2"
+   '(:tls nil
+     :host "bruh"
+     :port 6666
+     :nick "jacob/olind"
      :pass "bruhmoment")))
+;; email
+;; Each path is relative to `+mu4e-mu4e-mail-path', which is ~/.mail by default
+(require 'mu4e)
+(set-email-account! "home"
+  '((mu4e-sent-folder       . "/home/[Gmail].Sent Mail")
+    (mu4e-drafts-folder     . "/home/[Gmail].Drafts")
+    (mu4e-trash-folder      . "/home/[Gmail].Trash")
+    (mu4e-refile-folder     . "/home/[Gmail].All Mail")
+    (smtpmail-smtp-user     . "jacoblevgw@gmail.com")
+    (mu4e-compose-signature . "---\nJacob"))
+  t)
+(set-email-account! "school"
+  '((mu4e-sent-folder       . "/school/[Gmail].Sent Mail")
+    (mu4e-drafts-folder     . "/school/[Gmail].Drafts")
+    (mu4e-trash-folder      . "/school/[Gmail].Trash")
+    (mu4e-refile-folder     . "/school/[Gmail].All Mail")
+    (smtpmail-smtp-user     . "goldman-wetzlerj24@learn.hohschools.org")
+    (mu4e-compose-signature . "---\nJacob"))
+  t)
+
+(setq mu4e-bookmarks
+      '((:name "Today's messages"
+          :query "date:today..now"
+          :key ?t)
+        (:name "home-INBOX"
+         :key ?h
+         :query "maildir:/home/INBOX")
+
+        (:name "school-INBOX"
+         :key ?s
+         :query "maildir:/school/INBOX")
+        (
+         :name "INBOX"
+         :key ?i
+         :query "maildir:/school/INBOX OR maildir:/home/INBOX")))
+  
+
+
+
 ;; Here are some additional functions/macros that could help you configure Doom:
 ;;
 ;; - `load!' for loading external *.el files relative to this one
