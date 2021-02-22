@@ -4,11 +4,6 @@
 ;; sync' after modifying this file!
 
 
-;; Some functionality uses this to identify you, e.g. GPG configuration, email
-;; clients, file templates and snippets.
-(setq user-full-name "Jacob Goldman-Wetzler"
-      user-mail-address "jacoblevgw@gmail.com")
-
 ;; Doom exposes five (optional) variables for controlling fonts in Doom. Here
 ;; are the three important ones:
 ;;
@@ -27,6 +22,18 @@
 ;; `load-theme' function. This is the default:
 (setq doom-theme 'doom-gruvbox)
 
+;; processing mode
+(setq processing-location "/home/jacob/Downloads/processing/result/bin/processing-java")
+(setq processing-application-dir "/home/jacob/Documents/processing/apps")
+(setq processing-sketchbook-dir "/home/jacob/Documents/processing/sketch")
+(setq processing-output-dir "/tmp")
+
+;; Some functionality uses this to identify you, e.g. GPG configuration, email
+;; clients, file templates and snippets.
+(setq user-full-name "Jacob Goldman-Wetzler"
+      user-mail-address "jacoblevgw@gmail.com")
+
+
 (after! evil-snipe
   (evil-snipe-mode -1))
 
@@ -42,6 +49,14 @@
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
 (setq display-line-numbers-type 'relative)
 
+;; cd to home
+(defun own/cd-home ()
+  (interactive)
+  (cd "/home/jacob/"))
+
+(add-hook! 'emacs-lisp-mode-hook (parinfer-rust-mode-enable))
+(add-hook! 'racket-mode-hook (parinfer-rust-mode-enable))
+
 (require 'lsp)
 (use-package! zig-mode
   :hook ((zig-mode . lsp))
@@ -54,10 +69,21 @@
     :major-modes '(zig-mode)
     :server-id 'zls)))
 
-
 (map! :leader :desc "Next Error" :n "e" #'next-error
-      :leader :desc "Previous Error" :n "E" #'previous-error)
-
+      :leader :desc "Previous Error" :n "E" #'previous-error
+      :leader :desc "Open URL" :n "l" #'browse-url-xdg-open)
+(defun circe-command-ZNC (what)
+  "Send a message to ZNC incorporated by user '*status'."
+  (circe-command-MSG "*status" what))
+(defun circe-command-JNET (what)
+  "Send a message to ZNC incorporated by user '*status'."
+  (circe-command-MSG "*status" (concat "JumpNetwork " what)))
+(after! circe
+  (set-irc-server! "bruh"
+   '(:tls nil
+     :port 6697
+     :nick "jacob/freenode"
+     :pass "bruhmoment")))
 ;; Here are some additional functions/macros that could help you configure Doom:
 ;;
 ;; - `load!' for loading external *.el files relative to this one
