@@ -54,8 +54,10 @@
   (interactive)
   (cd "/home/jacob/"))
 
-(add-hook! 'emacs-lisp-mode-hook (parinfer-rust-mode-enable))
-(add-hook! 'racket-mode-hook (parinfer-rust-mode-enable))
+(require 'parinfer-rust-mode)
+(add-hook! 'emacs-lisp-mode-hook (parinfer-rust-mode))
+(add-hook! 'racket-mode-hook (parinfer-rust-mode))
+(add-hook! 'markdown-mode-hook (flyspell-mode))
 
 (require 'lsp)
 (use-package! zig-mode
@@ -69,9 +71,28 @@
     :major-modes '(zig-mode)
     :server-id 'zls)))
 
+(setq projectile-project-search-path '("~/dev/"))
+(setq ivy-use-selectable-prompt t)
+(setq company-idle-delay 0.1)
+(setq circe-new-day-notifier-format-message "")
+
 (map! :leader :desc "Next Error" :n "e" #'next-error
       :leader :desc "Previous Error" :n "E" #'previous-error
+      :desc "Move Up Split" :n "C-k" #'evil-window-up
+      :desc "Move Down Split" :n "C-j" #'evil-window-down
+      :desc "Move Left Split" :n "C-l" #'evil-window-left
+      :desc "Move Right Split" :n "C-l" #'evil-window-right
       :leader :desc "Open URL" :n "l" #'browse-url-xdg-open)
+
+(map!
+      :n "C-j" #'evil-window-down
+      :n "C-k" #'evil-window-up
+      :n "C-h" #'evil-window-left
+      :n "C-l" #'evil-window-right)
+
+      
+
+
 (defun circe-command-ZNC (what)
   "Send a message to ZNC incorporated by user '*status'."
   (circe-command-MSG "*status" what))
@@ -79,54 +100,51 @@
   "Send a message to ZNC incorporated by user '*status'."
   (circe-command-MSG "*status" (concat "JumpNetwork " what)))
 (after! circe
-  (set-irc-server! "bruh1"
+  (set-irc-server! "freenode"
    '(:tls nil
      :host "bruh"
      :port 6697
-     :nick "jacob/freenode"
-     :pass "bruhmoment")) ;; dont even try to hack me :)
-  (set-irc-server! "bruh2"
+     :nick "jacob"
+     :pass "jacob/freenode:bruhmoment")) ;; dont even try to hack me :)
+  (set-irc-server! "olind"
    '(:tls nil
      :host "bruh"
      :port 6666
-     :nick "jacob/olind"
-     :pass "bruhmoment")))
+     :nick "jacob"
+     :pass "jacob/olind:bruhmoment")))
 ;; email
 ;; Each path is relative to `+mu4e-mu4e-mail-path', which is ~/.mail by default
-(require 'mu4e)
-(set-email-account! "home"
-  '((mu4e-sent-folder       . "/home/[Gmail].Sent Mail")
-    (mu4e-drafts-folder     . "/home/[Gmail].Drafts")
-    (mu4e-trash-folder      . "/home/[Gmail].Trash")
-    (mu4e-refile-folder     . "/home/[Gmail].All Mail")
-    (smtpmail-smtp-user     . "jacoblevgw@gmail.com")
-    (mu4e-compose-signature . "---\nJacob"))
-  t)
-(set-email-account! "school"
-  '((mu4e-sent-folder       . "/school/[Gmail].Sent Mail")
-    (mu4e-drafts-folder     . "/school/[Gmail].Drafts")
-    (mu4e-trash-folder      . "/school/[Gmail].Trash")
-    (mu4e-refile-folder     . "/school/[Gmail].All Mail")
-    (smtpmail-smtp-user     . "goldman-wetzlerj24@learn.hohschools.org")
-    (mu4e-compose-signature . "---\nJacob"))
-  t)
+; (require 'mu4e)
+; (set-email-account! "home"
+;   '((mu4e-sent-folder       . "/home/[Gmail].Sent Mail")
+;     (mu4e-drafts-folder     . "/home/[Gmail].Drafts")
+;     (mu4e-trash-folder      . "/home/[Gmail].Trash")
+;     (mu4e-refile-folder     . "/home/[Gmail].All Mail")
+;     (smtpmail-smtp-user     . "jacoblevgw@gmail.com")
+;     (mu4e-compose-signature . "---\nJacob"))
+;   t)
+; (set-email-account! "school"
+;   '((mu4e-sent-folder       . "/school/[Gmail].Sent Mail")
+;     (mu4e-drafts-folder     . "/school/[Gmail].Drafts")
+;     (mu4e-trash-folder      . "/school/[Gmail].Trash")
+;     (mu4e-refile-folder     . "/school/[Gmail].All Mail")
+;     (smtpmail-smtp-user     . "goldman-wetzlerj24@learn.hohschools.org")
+;     (mu4e-compose-signature . "---\nJacob"))
+;   t)
 
 (setq mu4e-bookmarks
-      '((:name "Today's messages"
-          :query "date:today..now"
-          :key ?t)
-        (:name "home-INBOX"
+      '((:name "home-INBOX"
          :key ?h
          :query "maildir:/home/INBOX")
-
         (:name "school-INBOX"
          :key ?s
          :query "maildir:/school/INBOX")
-        (
-         :name "INBOX"
+        (:name "INBOX"
          :key ?i
          :query "maildir:/school/INBOX OR maildir:/home/INBOX")))
-  
+
+(add-hook 'before-save-hook #'lsp-format-buffer)
+
 
 
 
