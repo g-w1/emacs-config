@@ -8,7 +8,7 @@
 
 ;; To install SOME-PACKAGE from MELPA, ELPA or emacsmirror:
 (package! zig-mode)
-(package! parinfer-rust-mode)
+;; (package! parinfer-rust-mode)
 (package! processing-mode)
 (package! vue-mode)
 (package! gradle-mode

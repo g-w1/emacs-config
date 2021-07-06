@@ -60,10 +60,8 @@
 
 (setq gradle-use-gradlew t)
 
-(require 'parinfer-rust-mode)
-(add-hook! 'emacs-lisp-mode-hook (parinfer-rust-mode))
-(add-hook! 'racket-mode-hook (parinfer-rust-mode))
 (add-hook! 'markdown-mode-hook (flyspell-mode))
+(map! :mode 'common-lisp-mode :n "K" #'sly-documentation)
 
 (require 'lsp)
 (use-package! zig-mode
@@ -92,10 +90,6 @@
 
 (map! :leader :desc "Next Error" :n "e" #'next-error
       :leader :desc "Previous Error" :n "E" #'previous-error
-      :desc "Move Up Split" :n "C-k" #'evil-window-up
-      :desc "Move Down Split" :n "C-j" #'evil-window-down
-      :desc "Move Left Split" :n "C-l" #'evil-window-left
-      :desc "Move Right Split" :n "C-l" #'evil-window-right
       :leader :desc "Open URL" :n "l" #'browse-url-xdg-open)
 
 (map!
@@ -132,18 +126,30 @@
   "Send a message to ZNC incorporated by user '*status'."
   (circe-command-MSG "*status" (concat "JumpNetwork " what)))
 (after! circe
-  (set-irc-server! "freenode"
-                   '(:tls nil
-                     :host "bruh"
-                     :port 6697
-                     :nick "jacob"
-                     :pass "jacob/freenode:bruhmoment")) ;; dont even try to hack me :)
-  (set-irc-server! "olind"
-                   '(:tls nil
-                     :host "bruh"
-                     :port 6666
-                     :nick "jacob"
-                     :pass "jacob/olind:bruhmoment")))
+    (set-irc-server! "soju"
+                     '(:tls nil
+                        :host "bruh"
+                        :port 6667
+                        :nick "g-w1"
+                        :pass "bruhmoment")))
+
+(defun lui-autopaste-service-clbin (text)
+  "Paste TEXT to clbin.com and return the paste url."
+  (let ((url-request-method "POST")
+        (url-request-extra-headers
+         '(("Content-Type" . "application/x-www-form-urlencoded")))
+        (url-request-data (format "clbin=%s" (url-hexify-string text)))
+        (url-http-attempt-keepalives nil))
+    (let ((buf (url-retrieve-synchronously "https:/clbin.com/")))
+      (unwind-protect
+          (with-current-buffer buf
+            (goto-char (point-min))
+            (if (re-search-forward "\n\n" nil t)
+                (buffer-substring (point) (point-at-eol))
+              (error "Error during pasting to clbin.com")))
+        (kill-buffer buf)))))
+(setq! lui-autopaste-function #'lui-autopaste-service-clbin)
+
 ;; email
 ;; Each path is relative to `+mu4e-mu4e-mail-path', which is ~/.mail by default
                                         ; (require 'mu4e)
@@ -176,14 +182,7 @@
 ;;          :query "maildir:/school/INBOX OR maildir:/home/INBOX")))
 
 (setq +format-on-save-enabled-modes
-      '(not c-mode))
-
-
-
-
-
-
-
+      '(not c-mode c++-mode))
 
 
 ;; Here are some additional functions/macros that could help you configure Doom:
